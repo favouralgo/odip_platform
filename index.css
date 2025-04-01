@@ -1,0 +1,476 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: white;
+    height: 100px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+.logo {
+    height: 60px;
+    margin-right: 20px;
+}
+
+.nav {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav a:hover {
+    color: #8F3B3B;
+}
+
+
+.hero {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(143, 59, 59, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.hero-title {
+    color: white;
+    font-size: 4rem;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.content {
+    padding: 80px 0;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.un-logo h2 {
+    font-size: 28px;
+    line-height: 1.3;
+    font-weight: bold;
+    color: #222;
+}
+
+.description p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.description p:last-child {
+    margin-bottom: 0;
+}
+
+
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 20px;
+}
+
+.stat-number {
+    font-size: 5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Color the statistics numbers */
+.stats-container .stat-item:nth-child(1) .stat-number {
+    color: #0099ff;
+}
+
+.stats-container .stat-item:nth-child(2) .stat-number {
+    color: #6060ff;
+}
+
+.stats-container .stat-item:nth-child(3) .stat-number {
+    color: #0099ff;
+}
+
+.stat-label {
+    font-size: 1.5rem;
+    text-align: center;
+    color: #444;
+}
+
+.search-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #333;
+}
+
+.search-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.dropdown-container, .search-box {
+    position: relative;
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+select, input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 1rem;
+}
+
+.search-button {
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.search-icon {
+    color: #0099ff;
+    font-size: 1.5rem;
+}
+
+.filters-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.clear-button {
+    background-color: #7a3232; /* Using the requested maroon color */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* Filter section styles */
+.filters-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 60px; /* Increased margin to create more space */
+}
+
+.dropdown-container {
+    position: relative;
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+select, input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 1rem;
+}
+
+.clear-button {
+    background-color: #7a3232;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* Gallery styles */
+.gallery-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 50px 20px;
+    margin-bottom: 50px;
+}
+
+.gallery-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.fellow-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(25% - 15px);
+    min-width: 200px;
+}
+
+.fellow-image-container {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid;
+    margin-bottom: 15px;
+}
+
+.fellow-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fellow-name {
+    color: #7a3232;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Footer styles */
+.footer {
+    background-color: #f0f0f0;
+    padding: 50px 0 0 0;
+    width: 100%;
+    margin-top: auto; /* Pushes the footer to the bottom */
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px 40px;
+    flex-wrap: wrap;
+}
+
+/* Make sure these styles are applied to the parent container 
+   that wraps your entire page content including footer */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* This ensures the main content pushes the footer down */
+.main-content {
+    flex: 1;
+}
+
+/* Rest of your footer CSS remains unchanged */
+.copyright {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    width: 100%;
+    margin: 0;
+}
+
+.subscribe-form {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 400px;
+}
+
+.subscribe-input {
+    width: 100%;
+    padding: 12px;
+    padding-right: 50px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.subscribe-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 50px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.social-media {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    font-size: 18px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: #555;
+}
+
+/* Footer center section */
+.footer-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 250px;
+}
+
+.university-logo {
+    margin-bottom: 20px;
+}
+
+.university-logo img {
+    max-width: 180px;
+    height: auto;
+}
+
+.university-address {
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.university-contact {
+    line-height: 1.5;
+}
+
+.university-contact p {
+    margin-bottom: 5px;
+}
+
+/* Footer right section */
+.footer-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 250px;
+}
+
+.action-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.action-button:hover {
+    background-color: #555;
+}
+
+.arrow-icon {
+    font-size: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+    
+    .footer-left, .footer-center, .footer-right {
+        width: 100%;
+        max-width: 500px;
+    }
+}   
