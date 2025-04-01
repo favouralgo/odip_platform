@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    background-color: #f5f6fa;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #8d4a42;
+    color: white;
+    padding: 20px;
+    height: 100vh;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.stat-box {
+    background: #ffebe6;
+    padding: 20px;
+    border-radius: 12px;
+    width: 150px;
+    text-align: center;
+}
+
+.stat-box.approved { background: #ffe6cc; }
+.stat-box.pending { background: #e6ffe6; }
+.stat-box.rejected { background: #e6f2ff; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.status.approved { background: green; }
+.status.pending { background: orange; }
+.status.rejected { background: red; }
+
+button {
+    cursor: pointer;
+}
