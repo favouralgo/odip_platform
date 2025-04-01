@@ -1,0 +1,93 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    background-color: #f5f6fa;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #8d4a42;
+    color: white;
+    padding: 20px;
+    height: 100vh;
+}
+
+.sidebar ul {
+    list-style: none; /* Removes bullets */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+}
+
+.sidebar ul li {
+    padding: 10px;
+    margin: 10px 0;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background 0.3s;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+.sidebar ul li:hover {
+    background-color: #a1a1a1;
+    border-radius: 5px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.stat-box {
+    background: #ffebe6;
+    padding: 20px;
+    border-radius: 12px;
+    width: 150px;
+    text-align: center;
+}
+
+.stat-box.approved { background: #ffe6cc; }
+.stat-box.pending { background: #e6ffe6; }
+.stat-box.rejected { background: #e6f2ff; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.status.approved { background: green; }
+.status.pending { background: orange; }
+.status.rejected { background: red; }
+
+button {
+    cursor: pointer;
+}
