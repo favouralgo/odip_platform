@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    background-color: #f5f6fa;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #8d4a42;
+    color: white;
+    padding: 20px;
+    height: 100vh;
+}
+
+.sidebar ul {
+    list-style: none; /* Removes bullets */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+}
+
+.sidebar ul li {
+    padding: 10px;
+    margin: 10px 0;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background 0.3s;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+
+.sidebar ul li:hover {
+    background-color: #a1a1a1;
+    border-radius: 5px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.stat-box {
+    background: #ffebe6;
+    padding: 20px;
+    border-radius: 12px;
+    width: 150px;
+    text-align: center;
+}
+
+.stat-box.approved { background: #ffe6cc; }
+.stat-box.pending { background: #e6ffe6; }
+.stat-box.rejected { background: #e6f2ff; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.status.approved { background: green; }
+.status.pending { background: orange; }
+.status.rejected { background: red; }
+
+button {
+    cursor: pointer;
+}
+.announcement-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.announcement-form input,
+.announcement-form textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.announcement-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.announcement-list li {
+    background: #fff;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.announcement-list li h3 {
+    margin-bottom: 5px;
+    color: #8d4a42;
+}
+.button-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.form-button {
+    padding: 12px 25px;
+    background-color: #8d4a42;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.form-button:hover {
+    background-color: #a65b52;
+}
