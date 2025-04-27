@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements - ODIP Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+            <li><a href="admindashboard.html">Dashboard</a></li>
+            <li><a href="students.html">Manage Students</a></li>
+            <li><a href="applications.html">Applications</a></li>
+            <li><a href="reports.html">Reports</a></li>
+            <li><a href="announcements.html">Announcements</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="logout.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Announcements</h1>
+        </header>
+
+        <div class="announcement-form">
+            <h2>Create New Announcement</h2>
+            <form id="announcementForm">
+                <input type="text" id="announcementTitle" placeholder="Title" required>
+                <textarea id="announcementContent" placeholder="Write your announcement here..." rows="4" required></textarea>
+                <button type="submit">Post Announcement</button>
+            </form>
+        </div>
+
+        <div class="announcement-list">
+            <h2>Recent Announcements</h2>
+            <ul id="announcements">
+                <!-- Announcements will appear here -->
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
