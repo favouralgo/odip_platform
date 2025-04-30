@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcements - ODIP Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <script defer src="script.js"></script>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script defer src="assets/js/script.js"></script>
 </head>
 <body>
     <div class="sidebar">
         <h2>Dashboard</h2>
         <ul>
-            <li><a href="admindashboard.html">Dashboard</a></li>
-            <li><a href="students.html">Manage Students</a></li>
-            <li><a href="applications.html">Applications</a></li>
-            <li><a href="reports.html">Reports</a></li>
-            <li><a href="announcements.html">Announcements</a></li>
-            <li><a href="settings.html">Settings</a></li>
-            <li><a href="logout.html">Logout</a></li>
+            <li><a href="admindashboard.php">Dashboard</a></li>
+            <li><a href="students.php">Manage Students</a></li>
+            <li><a href="applications.php">Applications</a></li>
+            <li><a href="reports.php">Reports</a></li>
+            <li><a href="announcements.php">Announcements</a></li>
+            <li><a href="settings.php">Settings</a></li>
+            <li><a href="auth/logout.php">Logout</a></li>
         </ul>
     </div>
 
