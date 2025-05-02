@@ -20,7 +20,7 @@
     </header>
     
     <section class="hero">
-        <img src="images/Ashesi image3.jpg" alt="Fellows with sustainable development goal signs" class="hero-img"   />
+        <img src="images/Ashesi image3.jpg" alt="international engagement fellows" class="hero-img"   />
         <div class="overlay">
             <h1 class="hero-title">Meet the students</h1>
         </div>
