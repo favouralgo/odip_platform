@@ -198,7 +198,7 @@
 
         <div class="dashboard-wrapper">
             <div class="dashboard-header">
-                <h1><i class="fas fa-file-alt"></i> New International Engagement Application</h1>
+                <h1><i class="fas fa-file-alt"></i> New International Engagement Experience Application</h1>
                 <div class="action-buttons">
                     <a href="view_applications.php" class="btn btn-secondary">
                         <i class="fas fa-list"></i> View All Applications
