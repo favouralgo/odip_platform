@@ -69,7 +69,6 @@
                 <li class="active"><a href="admindashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="students.php"><i class="fas fa-user-graduate"></i> Manage Students</a></li>
                 <li><a href="applications.php"><i class="fas fa-file-alt"></i> Applications</a></li>
-                <li><a href="reports.php"><i class="fas fa-chart-bar"></i> Reports</a></li>
                 <li><a href="announcements.php"><i class="fas fa-bullhorn"></i> Announcements</a></li>
                 <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
                 <li><a href="auth/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
