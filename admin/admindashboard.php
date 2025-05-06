@@ -71,7 +71,7 @@
                 <li><a href="applications.php"><i class="fas fa-file-alt"></i> Applications</a></li>
                 <li><a href="announcements.php"><i class="fas fa-bullhorn"></i> Announcements</a></li>
                 <li><a href="settings.php"><i class="fas fa-cog"></i> Settings</a></li>
-                <li><a href="auth/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a href="../auth/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
     </div>
