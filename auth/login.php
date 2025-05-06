@@ -18,7 +18,7 @@
             <!-- Login Form -->
             <div id="login-form" class="form active">
                 <h2>Login to Your Account</h2>
-                <form>
+                <form id="login-form" name="lf" role="login" action="../actions/login_action.php" method="POST">
                     <div class="form-group">
                         <label for="login-email">Email Address</label>
                         <input type="email" id="login-email" placeholder="Enter your email" required>
@@ -41,31 +41,35 @@
             <!-- Signup Form -->
             <div id="signup-form" class="form">
                 <h2>Create an Account</h2>
-                <form>
+                <form id="signup-form" name="sf" role="sign-up" action="../actions/register_action.php'" method="POST">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="first-name">First Name</label>
-                            <input type="text" id="first-name" placeholder="First name" required>
+                            <input type="text" id="first_name" placeholder="First name" required>
                         </div>
                         <div class="form-group">
                             <label for="last-name">Last Name</label>
-                            <input type="text" id="last-name" placeholder="Last name" required>
+                            <input type="text" id="last_name" placeholder="Last name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-name">Last Name</label>
+                            <input type="text" name="username" id="username" class="username" placeholder="Last name" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="signup-email">Email Address</label>
-                        <input type="email" id="signup-email" placeholder="Enter your email" required>
+                        <input type="email" name="email" id="email" class="email" placeholder="Enter your email" required>
                     </div>
                     <div class="form-group">
                         <label for="signup-password">Password</label>
-                        <input type="password" id="signup-password" placeholder="Create a password" required>
+                        <input type="password" name="password" id="password" class="password" placeholder="Create a password" required>
                     </div>
                     <div class="form-group">
                         <label for="confirm-password">Confirm Password</label>
-                        <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                        <input type="password" name="confirm_password" id="confirm_password" class="password" placeholder="Confirm your password" required>
                     </div>
                 
-                    <button type="submit" class="submit-btn">Sign Up</button>
+                    <button type="submit" name="submit" class="submit-btn">Sign Up</button>
                 </form>
             </div>
         </div>

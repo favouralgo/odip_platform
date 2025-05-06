@@ -9,7 +9,7 @@
     define("DB_PASSWORD","");
 
     //Defined databasename
-    define("DB_NAME","odip");
+    define("DB_NAME","odip_international_engagement");
 
     
     // Make connection
