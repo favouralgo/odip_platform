@@ -1,15 +1,15 @@
-<!-- <?php
+<?php
 // Start the session
 // session_start();
 
 // Check if user is logged in
 // if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-//     header("Location: auth/login.php");
+//     header("Location: ../auth/login.php");
 //     exit;
 // }
 
 // Include database connection
-// include "../config/connection.php";
+include "../config/connection.php";
 
 // Fetch dashboard stats
 // $stats = [
@@ -21,7 +21,7 @@
 
 // Get total students count
 // $query = "SELECT COUNT(*) as total FROM students";
-// $result = mysqli_query($conn, $query);
+// $result = mysqli_query($connection, $query);
 // if ($result) {
 //     $stats['total'] = mysqli_fetch_assoc($result)['total'];
 // }
@@ -32,7 +32,7 @@
 //                 COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
 //                 COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected
 //                 FROM engagements";
-// $statusResult = mysqli_query($conn, $statusQuery);
+// $statusResult = mysqli_query($connection, $statusQuery);
 // if ($statusResult) {
 //     $statusCounts = mysqli_fetch_assoc($statusResult);
 //     $stats['approved'] = $statusCounts['approved'];
@@ -47,8 +47,8 @@
 //                 LEFT JOIN engagements e ON s.student_id = e.student_id
 //                 ORDER BY s.created_at DESC
 //                 LIMIT 10";
-// $studentsResult = mysqli_query($conn, $studentsQuery);
-// ?> -->
+// $studentsResult = mysqli_query($connection, $studentsQuery);
+ ?> 
 
 <!DOCTYPE html>
 <html lang="en">
@@ -85,7 +85,7 @@
                 </div>
                 <div class="header-profile">
                     <div class="profile-img">
-                        <img src="../assets/images/admin-avatar.png" alt="Admin">
+                        <img src="./uploads/admin-avatar.png" alt="admin_profile_image">
                     </div>
                     <div class="profile-info">
                         <p>Welcome, <strong><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin'; ?></strong></p>
@@ -102,9 +102,9 @@
                     <a href="https://forms.office.com/r/Z5qwX9L27u" target="_blank" class="btn btn-primary">
                         <i class="fas fa-file-alt"></i> Fill Out ODIP Form
                     </a>
-                    <a href="import.php" class="btn btn-secondary">
+                    <!-- <a href="import.php" class="btn btn-secondary">
                         <i class="fas fa-file-import"></i> Import Excel Data
-                    </a>
+                    </a> -->
                 </div>
             </div>
 
