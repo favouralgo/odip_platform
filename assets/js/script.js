@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Form validation for signup page (if exists)
+    // Form validation for signup page
     const signupForm = document.getElementById('signup-form');
     if (signupForm) {
         signupForm.addEventListener('submit', function(event) {
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Optional: Password strength validation
+            // Password strength validation
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             if (!passwordRegex.test(password.value)) {
                 alert('Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.');
