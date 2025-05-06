@@ -213,5 +213,5 @@ input[type="password"]:focus {
     .form-row {
         flex-direction: column;
         gap: 0;
-    }
+    } 
 }
