@@ -41,7 +41,7 @@
             <!-- Signup Form -->
             <div id="signup-form" class="form">
                 <h2>Create an Account</h2>
-                <form id="signup-form" name="sf" role="sign-up" action="../actions/register_action.php'" method="POST">
+                <form id="signup-form" name="sf" role="sign-up" action="../actions/signup_action.php'" method="POST">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="first-name">First Name</label>
