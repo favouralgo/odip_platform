@@ -1,5 +1,4 @@
 /* 
- * ODIP International Engagement
  * Student Form Styles - Complete Version
  */
 
@@ -25,7 +24,7 @@
     /* Spacing & Sizing */
     --border-radius: 10px;
     --input-radius: 6px;
-    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --card-shadow: none;
     --transition: all 0.3s ease;
 }
 
@@ -52,6 +51,9 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: var(--light-bg);
+    box-shadow: none;
+    border: none;
 }
 
 /* Header */
@@ -68,6 +70,7 @@ body {
     right: 0;
     z-index: 100;
 }
+
 
 .logo-container {
     display: flex;
@@ -141,6 +144,7 @@ body {
 }
 
 /* ========== FORM CARD ========== */
+/* Form Card Style without transparent background */
 .form-card {
     background: var(--white);
     border-radius: var(--border-radius);
@@ -148,6 +152,16 @@ body {
     overflow: hidden;
     margin-bottom: 30px;
 }
+
+
+/* Form Card Styles with transparent background */
+/* .form-card {
+    background: var(--light-bg); 
+    border-radius: 0; 
+    box-shadow: none; 
+    overflow: hidden;
+    margin-bottom: 30px;
+} */
 
 .card-header {
     padding: 20px;
@@ -458,6 +472,7 @@ textarea {
     font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
+    box-shadow: none; /* Remove shadow */
 }
 
 .btn-next {
@@ -467,8 +482,8 @@ textarea {
 
 .btn-next:hover {
     background-color: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: none; 
+    box-shadow: none; 
 }
 
 .btn-prev {
@@ -491,10 +506,28 @@ textarea {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.btn-continue {
+    background-color: #8d4a42; 
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    box-shadow: none;
+}
+
+.btn-continue i {
+    font-size: 0.9rem;
+}
 /* Form Navigation */
 .form-navigation {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     margin-top: 30px;
     padding-top: 20px;
     border-top: 1px solid rgba(0, 0, 0, 0.05);

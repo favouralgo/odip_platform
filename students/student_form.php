@@ -168,9 +168,6 @@ include "../config/connection.php";
         </header>
 
         <div class="main-content">
-            <div class="page-header">
-                <h2><i class="fas fa-file-alt"></i> New International Engagement Experience Application</h2>
-            </div>
 
             <?php if (!empty($success_message)): ?>
             <div class="alert alert-success">
@@ -202,10 +199,7 @@ include "../config/connection.php";
 
             <div class="form-card">
                 <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <h3>Student Information Form</h3>
+                    <h3><i class="fas fa-file-alt"></i> New International Engagement Experience Application</h3>
                 </div>
                 <div class="card-body">
                     <form action="student_form.php" method="POST" enctype="multipart/form-data" class="multi-step-form">
