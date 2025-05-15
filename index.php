@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+<head>    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ODIP Experience Platform</title>
     <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="stylesheet" href="assets/css/modal.css">
 </head>
 <body>
     <header class="header">
@@ -180,6 +180,37 @@
                     <img src="/api/placeholder/200/200" alt="Maxwell Mwalukanga" class="fellow-image">
                 </div>
                 <p class="fellow-name">Maxwell Mwalukanga</p>
+            </div>        </div>
+    </div>
+
+    <!-- Modal for Fellow Information -->
+    <div id="fellowModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <div class="modal-image-container">
+                    <img id="modalFellowImage" src="" alt="Fellow Image">
+                </div>
+                <h2 id="modalFellowName"></h2>
+            </div>
+            <div class="modal-body">
+                <div class="fellow-details">
+                    <p><strong>University:</strong> <span id="modalUniversity">Ashesi University</span></p>
+                    <p><strong>Year:</strong> <span id="modalYear">2023</span></p>
+                    <p><strong>SDG Focus:</strong> <span id="modalSDG">Quality Education</span></p>
+                    <p><strong>Region:</strong> <span id="modalRegion">West Africa</span></p>
+                    <p><strong>Role:</strong> <span id="modalRole">Fellow</span></p>
+                </div>
+                <div>
+                    <div class="fellow-bio">
+                        <h3>About</h3>
+                        <p id="modalBio">This student is passionate about making a positive impact through their leadership and dedication to sustainable development goals.</p>
+                    </div>
+                    <div class="fellow-project">
+                        <h3>Project</h3>
+                        <p id="modalProject">Working on innovative solutions to address challenges related to their focused sustainable development goal.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -231,10 +262,155 @@
                     <span class="arrow-icon">→</span>
                 </a>
             </div>
-        </div>
-        <div class="copyright">
+        </div>        <div class="copyright">
             <p>Copyright © Ashesi University</p>
         </div>
     </footer>
+
+    <script>
+        // Sample fellows data - in a real application, you would fetch this from a database
+        const fellowsData = {
+            "Kehinde Adebiyi": {
+                image: "/api/placeholder/200/200",
+                university: "Ashesi University",
+                year: "2023",
+                sdg: "Quality Education",
+                region: "West Africa",
+                role: "Campus Director",
+                bio: "Kehinde is passionate about educational equity and access to quality education in underserved communities.",
+                project: "Developing a mentorship program for high school students in rural Ghana."
+            },
+            "Idongesit Ubon": {
+                image: "/api/placeholder/200/200",
+                university: "Ashesi University",
+                year: "2023",
+                sdg: "Gender Equality",
+                region: "West Africa",
+                role: "Fellow",
+                bio: "Idongesit is working on initiatives to promote gender equality in STEM fields.",
+                project: "Creating workshops to encourage young girls to pursue careers in technology."
+            },
+            "Sarosh Nagar": {
+                image: "/api/placeholder/200/200",
+                university: "Ashesi University",
+                year: "2023",
+                sdg: "Climate Action",
+                region: "South Asia",
+                role: "Fellow",
+                bio: "Sarosh is dedicated to addressing climate change through community engagement.",
+                project: "Organizing tree-planting campaigns and educational workshops on sustainability."
+            },
+            "Khulood Ali Hassan": {
+                image: "/api/placeholder/200/200",
+                university: "Ashesi University",
+                year: "2023",
+                sdg: "Clean Water and Sanitation",
+                region: "Middle East",
+                role: "Fellow",
+                bio: "Khulood focuses on water conservation and access to clean water in resource-limited areas.",
+                project: "Designing affordable water filtration systems for rural communities."
+            },
+            "Hannah Lily Baron": {
+                image: "/api/placeholder/200/200",
+                university: "Ashesi University",
+                year: "2023",
+                sdg: "Zero Hunger",
+                region: "North America",
+                role: "Fellow",
+                bio: "Hannah is committed to addressing food insecurity in urban areas.",
+                project: "Creating community gardens and food distribution networks in underserved neighborhoods."
+            },
+            "Santiago Carrillo Sánchez": {
+                image: "/api/placeholder/200/200",
+                university: "Ashesi University",
+                year: "2023",
+                sdg: "Sustainable Cities",
+                region: "South America",
+                role: "Campus Director",
+                bio: "Santiago is passionate about urban planning and sustainable development.",
+                project: "Developing models for eco-friendly transportation systems in growing cities."
+            },
+            "Maria Teresa Carrozza": {
+                image: "/api/placeholder/200/200",
+                university: "Ashesi University",
+                year: "2023",
+                sdg: "Good Health and Well-being",
+                region: "Europe",
+                role: "Fellow",
+                bio: "Maria is dedicated to improving mental health awareness and support systems.",
+                project: "Creating peer counseling programs for college students."
+            },
+            "Maxwell Mwalukanga": {
+                image: "/api/placeholder/200/200",
+                university: "Ashesi University",
+                year: "2023",
+                sdg: "Affordable and Clean Energy",
+                region: "East Africa",
+                role: "Fellow",
+                bio: "Maxwell is working on renewable energy solutions for off-grid communities.",
+                project: "Designing and implementing solar power systems for rural schools and clinics."
+            }
+        };
+
+        // Get modal elements
+        const modal = document.getElementById("fellowModal");
+        const modalClose = document.querySelector(".close-modal");
+        const fellowCards = document.querySelectorAll(".fellow-card");
+        
+        // Modal data elements
+        const modalFellowName = document.getElementById("modalFellowName");
+        const modalFellowImage = document.getElementById("modalFellowImage");
+        const modalUniversity = document.getElementById("modalUniversity");
+        const modalYear = document.getElementById("modalYear");
+        const modalSDG = document.getElementById("modalSDG");
+        const modalRegion = document.getElementById("modalRegion");
+        const modalRole = document.getElementById("modalRole");
+        const modalBio = document.getElementById("modalBio");
+        const modalProject = document.getElementById("modalProject");
+        
+        // Add click event to each fellow card
+        fellowCards.forEach(card => {
+            card.addEventListener("click", function() {
+                const name = this.querySelector(".fellow-name").textContent;
+                const fellow = fellowsData[name];
+                  if (fellow) {
+                    // Populate modal with fellow data
+                    modalFellowName.textContent = name;
+                    
+                    // Use a default placeholder if image is not available or invalid
+                    if (fellow.image && fellow.image !== "/api/placeholder/200/200") {
+                        modalFellowImage.src = fellow.image;
+                    } else {
+                        // Using a default placeholder image
+                        modalFellowImage.src = "images/default_profile.png";
+                    }
+                    
+                    modalFellowImage.alt = name;
+                    modalUniversity.textContent = fellow.university;
+                    modalYear.textContent = fellow.year;
+                    modalSDG.textContent = fellow.sdg;
+                    modalRegion.textContent = fellow.region;
+                    modalRole.textContent = fellow.role;
+                    modalBio.textContent = fellow.bio;
+                    modalProject.textContent = fellow.project;
+                    
+                    // Display modal
+                    modal.style.display = "block";
+                }
+            });
+        });
+        
+        // Close modal when clicking the X button
+        modalClose.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+        
+        // Close modal when clicking outside the modal content
+        window.addEventListener("click", function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
