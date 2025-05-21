@@ -1,106 +1,106 @@
-<!-- <?php
+<?php
 // Start the session
-// session_start();
+session_start();
 
 // Check if user is logged in
-// if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-//     header("Location: auth/login.php");
-//     exit;
-// }
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../auth/login.php");
+    exit;
+}
 
 // Include database connection
-// include "../config/db_connect.php";
+include "../config/connection.php";
 
 // Handle filter and search
-// $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
-// $filter_major = isset($_GET['major']) ? mysqli_real_escape_string($conn, $_GET['major']) : '';
-// $filter_year = isset($_GET['year_group']) ? mysqli_real_escape_string($conn, $_GET['year_group']) : '';
-// $filter_engagement = isset($_GET['engagement_type']) ? mysqli_real_escape_string($conn, $_GET['engagement_type']) : '';
+$search = isset($_GET['search']) ? $connection->real_escape_string($_GET['search']) : '';
+$filter_major = isset($_GET['major']) ? $connection->real_escape_string($_GET['major']) : '';
+$filter_year = isset($_GET['year_group']) ? $connection->real_escape_string($_GET['year_group']) : '';
+$filter_engagement = isset($_GET['engagement_type']) ? $connection->real_escape_string($_GET['engagement_type']) : '';
 
 // Build query conditions based on filters
-// $conditions = [];
-// if (!empty($search)) {
-//     $conditions[] = "(s.name LIKE '%$search%' OR s.email_address LIKE '%$search%' OR s.nationality LIKE '%$search%')";
-// }
-// if (!empty($filter_major)) {
-//     $conditions[] = "s.major = '$filter_major'";
-// }
-// if (!empty($filter_year)) {
-//     $conditions[] = "s.year_group = '$filter_year'";
-// }
-// if (!empty($filter_engagement)) {
-//     $conditions[] = "e.engagement_type = '$filter_engagement'";
-// }
+$conditions = [];
+if (!empty($search)) {
+    $conditions[] = "(s.name LIKE '%$search%' OR s.email_address LIKE '%$search%' OR s.nationality LIKE '%$search%')";
+}
+if (!empty($filter_major)) {
+    $conditions[] = "s.major = '$filter_major'";
+}
+if (!empty($filter_year)) {
+    $conditions[] = "s.year_group = '$filter_year'";
+}
+if (!empty($filter_engagement)) {
+    $conditions[] = "e.engagement_type = '$filter_engagement'";
+}
 
 // Combine conditions for the WHERE clause
-// $whereClause = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) : "";
+$whereClause = !empty($conditions) ? "WHERE " . implode(' AND ', $conditions) : "";
 
 // Pagination settings
-// $records_per_page = 10;
-// $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-// $offset = ($page - 1) * $records_per_page;
+$records_per_page = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $records_per_page;
 
 // Count total records for pagination
-// $countQuery = "SELECT COUNT(DISTINCT s.student_id) as total FROM students s 
-//                LEFT JOIN engagements e ON s.student_id = e.student_id 
-//                $whereClause";
-// $countResult = mysqli_query($conn, $countQuery);
-// $totalRecords = mysqli_fetch_assoc($countResult)['total'];
-// $totalPages = ceil($totalRecords / $records_per_page);
+$countQuery = "SELECT COUNT(DISTINCT s.student_id) as total FROM students s 
+               LEFT JOIN engagements e ON s.student_id = e.student_id 
+               $whereClause";
+$countResult = $connection->query($countQuery);
+$totalRecords = $countResult->fetch_assoc()['total'];
+$totalPages = ceil($totalRecords / $records_per_page);
 
 // Get students data with pagination
-// $query = "SELECT s.student_id, s.name, s.gender, s.nationality, s.major, s.year_group, 
-//           s.email_address, s.linkedin_url, s.has_picture, e.engagement_type, e.destination_country,
-//           e.institution_name
-//           FROM students s
-//           LEFT JOIN engagements e ON s.student_id = e.student_id
-//           $whereClause
-//           GROUP BY s.student_id
-//           ORDER BY s.name ASC
-//           LIMIT $offset, $records_per_page";
+$query = "SELECT s.student_id, s.name, s.gender, s.nationality, s.major, s.year_group, 
+          s.email_address, s.linkedin_url, s.has_picture, e.engagement_type, e.destination_country,
+          e.institution_name
+          FROM students s
+          LEFT JOIN engagements e ON s.student_id = e.student_id
+          $whereClause
+          GROUP BY s.student_id
+          ORDER BY s.name ASC
+          LIMIT $offset, $records_per_page";
 
-// $result = mysqli_query($conn, $query);
-// $students = [];
+$result = $connection->query($query);
+$students = [];
 
-// if ($result) {
-//     while ($row = mysqli_fetch_assoc($result)) {
-//         $students[] = $row;
-//     }
-// }
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $students[] = $row;
+    }
+}
 
 // Get unique major options for filter
-// $majorQuery = "SELECT DISTINCT major FROM students ORDER BY major";
-// $majorResult = mysqli_query($conn, $majorQuery);
-// $majorOptions = [];
+$majorQuery = "SELECT DISTINCT major FROM students ORDER BY major";
+$majorResult = $connection->query($majorQuery);
+$majorOptions = [];
 
-// if ($majorResult) {
-//     while ($row = mysqli_fetch_assoc($majorResult)) {
-//         $majorOptions[] = $row['major'];
-//     }
-// }
+if ($majorResult) {
+    while ($row = $majorResult->fetch_assoc()) {
+        $majorOptions[] = $row['major'];
+    }
+}
 
 // Get unique year groups for filter
-// $yearQuery = "SELECT DISTINCT year_group FROM students ORDER BY year_group DESC";
-// $yearResult = mysqli_query($conn, $yearQuery);
-// $yearOptions = [];
+$yearQuery = "SELECT DISTINCT year_group FROM students ORDER BY year_group DESC";
+$yearResult = $connection->query($yearQuery);
+$yearOptions = [];
 
-// if ($yearResult) {
-//     while ($row = mysqli_fetch_assoc($yearResult)) {
-//         $yearOptions[] = $row['year_group'];
-//     }
-// }
+if ($yearResult) {
+    while ($row = $yearResult->fetch_assoc()) {
+        $yearOptions[] = $row['year_group'];
+    }
+}
 
 // Get unique engagement types for filter
-// $engagementQuery = "SELECT DISTINCT engagement_type FROM engagements ORDER BY engagement_type";
-// $engagementResult = mysqli_query($conn, $engagementQuery);
-// $engagementOptions = [];
+$engagementQuery = "SELECT DISTINCT engagement_type FROM engagements ORDER BY engagement_type";
+$engagementResult = $connection->query($engagementQuery);
+$engagementOptions = [];
 
-// if ($engagementResult) {
-//     while ($row = mysqli_fetch_assoc($engagementResult)) {
-//         $engagementOptions[] = $row['engagement_type'];
-//     }
-// }
-?> -->
+if ($engagementResult) {
+    while ($row = $engagementResult->fetch_assoc()) {
+        $engagementOptions[] = $row['engagement_type'];
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">

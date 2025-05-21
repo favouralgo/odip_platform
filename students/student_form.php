@@ -1,145 +1,180 @@
 <?php
+// Start session
+session_start();
 
 // Include database connection
 include "../config/connection.php";
 
-// Process form submission
-// $success_message = '';
-// $error_message = '';
+// Initialize variables
+$success_message = '';
+$error_message = '';
 
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     // Get form data
-//     $name = mysqli_real_escape_string($connection, $_POST['name']);
-//     $gender = mysqli_real_escape_string($connection, $_POST['gender']);
-//     $nationality = mysqli_real_escape_string($connection, $_POST['nationality']);
-//     $major = mysqli_real_escape_string($connection, $_POST['major']);
-//     $year_group = mysqli_real_escape_string($connection, $_POST['year_group']);
-//     $email = mysqli_real_escape_string($connection, $_POST['email']);
-//     $linkedin = isset($_POST['linkedin']) ? mysqli_real_escape_string($connection, $_POST['linkedin']) : '';
-//     $has_picture = isset($_FILES['profile_picture']) && $_FILES['profile_picture']['size'] > 0 ? 1 : 0;
+// Process form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get form data
+    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $gender = filter_input(INPUT_POST, 'gender', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $nationality = filter_input(INPUT_POST, 'nationality', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $major = filter_input(INPUT_POST, 'major', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $year_group = filter_input(INPUT_POST, 'year_group', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $linkedin = isset($_POST['linkedin']) ? filter_input(INPUT_POST, 'linkedin', FILTER_SANITIZE_URL) : '';
+    $has_picture = isset($_FILES['profile_picture']) && $_FILES['profile_picture']['size'] > 0 ? 1 : 0;
     
-//     // Begin transaction
-//     mysqli_begin_transaction($connection);
+    // Validation
+    $errors = [];
     
-//     try {
-//         // Insert into students table
-//         $student_query = "INSERT INTO students (name, gender, nationality, major, year_group, email_address, linkedin_url, has_picture) 
-//                          VALUES ('$name', '$gender', '$nationality', '$major', '$year_group', '$email', '$linkedin', $has_picture)";
+    if (empty($name) || empty($gender) || empty($nationality) || empty($major) || empty($year_group) || empty($email)) {
+        $errors[] = "All required fields must be filled";
+    }
+    
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Invalid email format";
+    }
+    
+    if (!empty($linkedin) && !filter_var($linkedin, FILTER_VALIDATE_URL)) {
+        $errors[] = "Invalid LinkedIn URL format";
+    }
+    
+    // If no errors, proceed with submission
+    if (empty($errors)) {
+        // Begin transaction
+        $connection->begin_transaction();
         
-//         if (!mysqli_query($connection, $student_query)) {
-//             throw new Exception("Error creating student record: " . mysqli_error($connection));
-//         }
-        
-//         $student_id = mysqli_insert_id($connection);
-        
-//         // Get engagement data
-//         $engagement_type = mysqli_real_escape_string($connection, $_POST['engagement_type']);
-//         $destination = mysqli_real_escape_string($connection, $_POST['destination_country']);
-//         $institution = mysqli_real_escape_string($connection, $_POST['institution_name']);
-        
-//         // Insert into engagements table with default status of 'pending'
-//         $engagement_query = "INSERT INTO engagements (student_id, engagement_type, destination_country, institution_name, status) 
-//                             VALUES ($student_id, '$engagement_type', '$destination', '$institution', 'pending')";
-        
-//         if (!mysqli_query($connection, $engagement_query)) {
-//             throw new Exception("Error creating engagement record: " . mysqli_error($connection));
-//         }
-        
-//         $engagement_id = mysqli_insert_id($connection);
-        
-//         // Get experience data
-//         $inspiration = mysqli_real_escape_string($connection, $_POST['inspiration']);
-//         $wished_to_know = mysqli_real_escape_string($connection, $_POST['wished_to_know']);
-//         $funny_story = mysqli_real_escape_string($connection, $_POST['funny_story']);
-//         $things_done = mysqli_real_escape_string($connection, $_POST['things_done']);
-//         $fears = mysqli_real_escape_string($connection, $_POST['fears']);
-//         $culture_shock = mysqli_real_escape_string($connection, $_POST['culture_shock']);
-//         $advice = mysqli_real_escape_string($connection, $_POST['advice']);
-//         $career_change = mysqli_real_escape_string($connection, $_POST['career_change']);
-//         $interesting_class = mysqli_real_escape_string($connection, $_POST['interesting_class']);
-//         $teaching_style = mysqli_real_escape_string($connection, $_POST['teaching_style']);
-//         $personal_change = mysqli_real_escape_string($connection, $_POST['personal_change']);
-//         $do_differently = mysqli_real_escape_string($connection, $_POST['do_differently']);
-        
-//         // Insert into experience_responses table
-//         $experience_query = "INSERT INTO experience_responses (
-//                             student_id, engagement_id, inspiration, wished_to_know, 
-//                             funny_story, things_done, fears, culture_shock, 
-//                             advice, career_choice_change, interesting_class, 
-//                             teaching_learning_style, personal_change, would_do_differently
-//                             ) VALUES (
-//                             $student_id, $engagement_id, '$inspiration', '$wished_to_know', 
-//                             '$funny_story', '$things_done', '$fears', '$culture_shock', 
-//                             '$advice', '$career_change', '$interesting_class', 
-//                             '$teaching_style', '$personal_change', '$do_differently'
-//                             )";
-        
-//         if (!mysqli_query($connection, $experience_query)) {
-//             throw new Exception("Error creating experience record: " . mysqli_error($connection));
-//         }
-        
-//         // Handle file upload if picture exists
-//         if ($has_picture) {
-//             $target_dir = "../uploads/";
+        try {
+            // Insert into students table
+            $student_query = "INSERT INTO students (name, gender, nationality, major, year_group, email_address, linkedin_url, has_picture) 
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             
-//             // Create directory if it doesn't exist
-//             if (!file_exists($target_dir)) {
-//                 mkdir($target_dir, 0755, true);
-//             }
+            $stmt = $connection->prepare($student_query);
+            $stmt->bind_param("sssssssi", $name, $gender, $nationality, $major, $year_group, $email, $linkedin, $has_picture);
             
-//             $file_extension = pathinfo($_FILES["profile_picture"]["name"], PATHINFO_EXTENSION);
-//             $new_filename = "student_" . $student_id . "." . $file_extension;
-//             $target_file = $target_dir . $new_filename;
+            if (!$stmt->execute()) {
+                throw new Exception("Error creating student record: " . $stmt->error);
+            }
             
-//             if (move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $target_file)) {
-//                 $picture_query = "INSERT INTO student_pictures (student_id, file_name, file_path) 
-//                                  VALUES ($student_id, '$new_filename', '$target_file')";
+            $student_id = $connection->insert_id;
+            
+            // Get engagement data
+            $engagement_type = filter_input(INPUT_POST, 'engagement_type', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $destination = filter_input(INPUT_POST, 'destination_country', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $institution = filter_input(INPUT_POST, 'institution_name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            
+            // Insert into engagements table
+            $engagement_query = "INSERT INTO engagements (student_id, engagement_type, destination_country, institution_name) 
+                                VALUES (?, ?, ?, ?)";
+            
+            $stmt = $connection->prepare($engagement_query);
+            $stmt->bind_param("isss", $student_id, $engagement_type, $destination, $institution);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Error creating engagement record: " . $stmt->error);
+            }
+            
+            $engagement_id = $connection->insert_id;
+            
+            // Get experience data
+            $inspiration = filter_input(INPUT_POST, 'inspiration', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $wished_to_know = filter_input(INPUT_POST, 'wished_to_know', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $funny_story = filter_input(INPUT_POST, 'funny_story', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $things_done = filter_input(INPUT_POST, 'things_done', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $fears = filter_input(INPUT_POST, 'fears', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $culture_shock = filter_input(INPUT_POST, 'culture_shock', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $advice = filter_input(INPUT_POST, 'advice', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $career_change = filter_input(INPUT_POST, 'career_change', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $interesting_class = filter_input(INPUT_POST, 'interesting_class', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $teaching_style = filter_input(INPUT_POST, 'teaching_style', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $personal_change = filter_input(INPUT_POST, 'personal_change', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $do_differently = filter_input(INPUT_POST, 'do_differently', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            
+            // Insert into experience_responses table
+            $experience_query = "INSERT INTO experience_responses (
+                                student_id, engagement_id, inspiration, wished_to_know, 
+                                funny_story, things_done, fears, culture_shock, 
+                                advice, career_choice_change, interesting_class, 
+                                teaching_learning_style, personal_change, would_do_differently
+                                ) VALUES (
+                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                                )";
+            
+            $stmt = $connection->prepare($experience_query);
+            $stmt->bind_param("iissssssssssss", $student_id, $engagement_id, $inspiration, $wished_to_know, 
+                             $funny_story, $things_done, $fears, $culture_shock, 
+                             $advice, $career_change, $interesting_class, 
+                             $teaching_style, $personal_change, $do_differently);
+            
+            if (!$stmt->execute()) {
+                throw new Exception("Error creating experience record: " . $stmt->error);
+            }
+            
+            // Handle file upload if picture exists
+            if ($has_picture) {
+                $target_dir = "../uploads/";
                 
-//                 if (!mysqli_query($connection, $picture_query)) {
-//                     throw new Exception("Error saving picture: " . mysqli_error($connection));
-//                 }
-//             } else {
-//                 throw new Exception("Error uploading picture");
-//             }
-//         }
-        
-//         // Commit the transaction
-//         mysqli_commit($connection);
-//         $success_message = "Your application has been submitted successfully! It will be reviewed by an administrator.";
-        
-//     } catch (Exception $e) {
-//         // Rollback the transaction in case of error
-//         mysqli_rollback($connection);
-//         $error_message = $e->getMessage();
-//     }
-// }
+                // Create directory if it doesn't exist
+                if (!file_exists($target_dir)) {
+                    mkdir($target_dir, 0755, true);
+                }
+                
+                $file_extension = pathinfo($_FILES["profile_picture"]["name"], PATHINFO_EXTENSION);
+                $new_filename = "student_" . $student_id . "." . $file_extension;
+                $target_file = $target_dir . $new_filename;
+                
+                if (move_uploaded_file($_FILES["profile_picture"]["tmp_name"], $target_file)) {
+                    $picture_query = "INSERT INTO student_pictures (student_id, file_name, file_path) 
+                                     VALUES (?, ?, ?)";
+                    
+                    $stmt = $connection->prepare($picture_query);
+                    $stmt->bind_param("iss", $student_id, $new_filename, $target_file);
+                    
+                    if (!$stmt->execute()) {
+                        throw new Exception("Error saving picture: " . $stmt->error);
+                    }
+                } else {
+                    throw new Exception("Error uploading picture");
+                }
+            }
+            
+            // Commit the transaction
+            $connection->commit();
+            $success_message = "Your application has been submitted successfully! It will be reviewed by an administrator.";
+            
+        } catch (Exception $e) {
+            // Rollback the transaction in case of error
+            $connection->rollback();
+            $error_message = $e->getMessage();
+        }
+    } else {
+        $error_message = implode("<br>", $errors);
+    }
+}
 
 // List of nationalities for dropdown
-// $nationalities = [
-//     "Afghan", "Albanian", "Algerian", "American", "Andorran", "Angolan", "Antiguan", "Argentine", "Armenian", 
-//     "Australian", "Austrian", "Azerbaijani", "Bahamian", "Bahraini", "Bangladeshi", "Barbadian", "Belarusian", 
-//     "Belgian", "Belizean", "Beninese", "Bhutanese", "Bolivian", "Bosnian", "Botswanan", "Brazilian", "British", 
-//     "Bruneian", "Bulgarian", "Burkinabe", "Burmese", "Burundian", "Cambodian", "Cameroonian", "Canadian", 
-//     "Cape Verdean", "Central African", "Chadian", "Chilean", "Chinese", "Colombian", "Comoran", "Congolese", 
-//     "Costa Rican", "Croatian", "Cuban", "Cypriot", "Czech", "Danish", "Djibouti", "Dominican", "Dutch", 
-//     "East Timorese", "Ecuadorean", "Egyptian", "Emirian", "Equatorial Guinean", "Eritrean", "Estonian", 
-//     "Ethiopian", "Fijian", "Filipino", "Finnish", "French", "Gabonese", "Gambian", "Georgian", "German", 
-//     "Ghanaian", "Greek", "Grenadian", "Guatemalan", "Guinean", "Guinea-Bissauan", "Guyanese", "Haitian", 
-//     "Honduran", "Hungarian", "Icelander", "Indian", "Indonesian", "Iranian", "Iraqi", "Irish", "Israeli", 
-//     "Italian", "Ivorian", "Jamaican", "Japanese", "Jordanian", "Kazakhstani", "Kenyan", "Kiribati", "Korean", 
-//     "Kuwaiti", "Kyrgyz", "Laotian", "Latvian", "Lebanese", "Liberian", "Libyan", "Liechtensteiner", "Lithuanian", 
-//     "Luxembourger", "Macedonian", "Malagasy", "Malawian", "Malaysian", "Maldivian", "Malian", "Maltese", 
-//     "Marshallese", "Mauritanian", "Mauritian", "Mexican", "Micronesian", "Moldovan", "Monacan", "Mongolian", 
-//     "Moroccan", "Mosotho", "Motswana", "Mozambican", "Namibian", "Nauruan", "Nepalese", "New Zealander", 
-//     "Nicaraguan", "Nigerian", "Nigerien", "Norwegian", "Omani", "Pakistani", "Palauan", "Panamanian", 
-//     "Papua New Guinean", "Paraguayan", "Peruvian", "Polish", "Portuguese", "Qatari", "Romanian", "Russian", 
-//     "Rwandan", "Saint Lucian", "Salvadoran", "Samoan", "San Marinese", "Sao Tomean", "Saudi", "Senegalese", 
-//     "Serbian", "Seychellois", "Sierra Leonean", "Singaporean", "Slovakian", "Slovenian", "Solomon Islander", 
-//     "Somali", "South African", "Spanish", "Sri Lankan", "Sudanese", "Surinamer", "Swazi", "Swedish", "Swiss", 
-//     "Syrian", "Taiwanese", "Tajik", "Tanzanian", "Thai", "Togolese", "Tongan", "Trinidadian", "Tunisian", 
-//     "Turkish", "Tuvaluan", "Ugandan", "Ukrainian", "Uruguayan", "Uzbekistani", "Vanuatuan", "Venezuelan", 
-//     "Vietnamese", "Yemeni", "Zambian", "Zimbabwean"
-// ];
+$nationalities = [
+    "Afghan", "Albanian", "Algerian", "American", "Andorran", "Angolan", "Antiguan", "Argentine", "Armenian", 
+    "Australian", "Austrian", "Azerbaijani", "Bahamian", "Bahraini", "Bangladeshi", "Barbadian", "Belarusian", 
+    "Belgian", "Belizean", "Beninese", "Bhutanese", "Bolivian", "Bosnian", "Botswanan", "Brazilian", "British", 
+    "Bruneian", "Bulgarian", "Burkinabe", "Burmese", "Burundian", "Cambodian", "Cameroonian", "Canadian", 
+    "Cape Verdean", "Central African", "Chadian", "Chilean", "Chinese", "Colombian", "Comoran", "Congolese", 
+    "Costa Rican", "Croatian", "Cuban", "Cypriot", "Czech", "Danish", "Djibouti", "Dominican", "Dutch", 
+    "East Timorese", "Ecuadorean", "Egyptian", "Emirian", "Equatorial Guinean", "Eritrean", "Estonian", 
+    "Ethiopian", "Fijian", "Filipino", "Finnish", "French", "Gabonese", "Gambian", "Georgian", "German", 
+    "Ghanaian", "Greek", "Grenadian", "Guatemalan", "Guinean", "Guinea-Bissauan", "Guyanese", "Haitian", 
+    "Honduran", "Hungarian", "Icelander", "Indian", "Indonesian", "Iranian", "Iraqi", "Irish", "Israeli", 
+    "Italian", "Ivorian", "Jamaican", "Japanese", "Jordanian", "Kazakhstani", "Kenyan", "Kiribati", "Korean", 
+    "Kuwaiti", "Kyrgyz", "Laotian", "Latvian", "Lebanese", "Liberian", "Libyan", "Liechtensteiner", "Lithuanian", 
+    "Luxembourger", "Macedonian", "Malagasy", "Malawian", "Malaysian", "Maldivian", "Malian", "Maltese", 
+    "Marshallese", "Mauritanian", "Mauritian", "Mexican", "Micronesian", "Moldovan", "Monacan", "Mongolian", 
+    "Moroccan", "Mosotho", "Motswana", "Mozambican", "Namibian", "Nauruan", "Nepalese", "New Zealander", 
+    "Nicaraguan", "Nigerian", "Nigerien", "Norwegian", "Omani", "Pakistani", "Palauan", "Panamanian", 
+    "Papua New Guinean", "Paraguayan", "Peruvian", "Polish", "Portuguese", "Qatari", "Romanian", "Russian", 
+    "Rwandan", "Saint Lucian", "Salvadoran", "Samoan", "San Marinese", "Sao Tomean", "Saudi", "Senegalese", 
+    "Serbian", "Seychellois", "Sierra Leonean", "Singaporean", "Slovakian", "Slovenian", "Solomon Islander", 
+    "Somali", "South African", "Spanish", "Sri Lankan", "Sudanese", "Surinamer", "Swazi", "Swedish", "Swiss", 
+    "Syrian", "Taiwanese", "Tajik", "Tanzanian", "Thai", "Togolese", "Tongan", "Trinidadian", "Tunisian", 
+    "Turkish", "Tuvaluan", "Ugandan", "Ukrainian", "Uruguayan", "Uzbekistani", "Vanuatuan", "Venezuelan", 
+    "Vietnamese", "Yemeni", "Zambian", "Zimbabwean"
+];
 ?>
 
 <!DOCTYPE html>

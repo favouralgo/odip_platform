@@ -1,44 +1,44 @@
 <?php
 // Start the session
-// session_start();
+session_start();
 
 // Check if user is logged in and is an admin
-// if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-//     header("Location: ../auth/login.php");
-//     exit;
-// }
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../auth/login.php");
+    exit;
+}
 
 // Include database connection
 include "../config/connection.php";
 
 // Handle application status update (approve/reject)
-// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['engagement_id'])) {
-//     $action = $_POST['action'];
-//     $engagementId = intval($_POST['engagement_id']);
-//     $status = ($action === 'approve') ? 'approved' : 'rejected';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['engagement_id'])) {
+    $action = $_POST['action'];
+    $engagementId = intval($_POST['engagement_id']);
+    $status = ($action === 'approve') ? 'approved' : 'rejected';
 
-//     $stmt = $connection->prepare("UPDATE engagements SET status = ? WHERE engagement_id = ?");
-//     $stmt->bind_param("si", $status, $engagementId);
+    $stmt = $connection->prepare("UPDATE engagements SET status = ? WHERE engagement_id = ?");
+    $stmt->bind_param("si", $status, $engagementId);
 
-//     if ($stmt->execute()) {
-//         $_SESSION['message'] = "Application has been successfully " . ucfirst($status) . ".";
-//     } else {
-//         $_SESSION['error'] = "Failed to update application status.";
-//     }
+    if ($stmt->execute()) {
+        $_SESSION['message'] = "Application has been successfully " . ucfirst($status) . ".";
+    } else {
+        $_SESSION['error'] = "Failed to update application status: " . $connection->error;
+    }
 
-//     $stmt->close();
-//     header("Location: applications.php");
-//     exit;
-// }
+    $stmt->close();
+    header("Location: applications.php");
+    exit;
+}
 
 // Fetch all pending applications
-// $query = "SELECT e.engagement_id, e.engagement_type, e.destination_country, e.institution_name, e.status, 
-//                  s.name AS student_name, s.year_group, s.major, s.nationality
-//           FROM engagements e
-//           JOIN students s ON e.student_id = s.student_id
-//           WHERE e.status = 'pending'
-//           ORDER BY e.created_at DESC";
-// $result = $connection->query($query);
+$query = "SELECT e.engagement_id, e.engagement_type, e.destination_country, e.institution_name, e.status, 
+                 s.student_id, s.name AS student_name, s.year_group, s.major, s.nationality
+          FROM engagements e
+          JOIN students s ON e.student_id = s.student_id
+          WHERE e.status = 'pending'
+          ORDER BY e.created_at DESC";
+$result = $connection->query($query);
 ?>
 
 <!DOCTYPE html>

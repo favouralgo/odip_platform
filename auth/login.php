@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,10 +12,22 @@
 <body>
     <div class="container">
         <div class="form-container">
-
             <!-- Login Form -->
             <div id="login-form" class="form active">
                 <h2>Login to Your Account</h2>
+                
+                <?php if (isset($_SESSION['login_error'])): ?>
+                <div class="alert alert-danger">
+                    <?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (isset($_SESSION['signup_success'])): ?>
+                <div class="alert alert-success">
+                    <?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?>
+                </div>
+                <?php endif; ?>
+                
                 <form id="login-form" name="lf" role="login" action="../actions/login_action.php" method="POST">
                     <div class="form-group">
                         <label for="login-email">Email Address</label>
@@ -30,6 +45,10 @@
                         <a href="#" class="forgot-password">Forgot Password?</a>
                     </div>
                     <button type="submit" class="submit-btn">Login</button>
+                    
+                    <div class="form-footer">
+                        <p>Don't have an account? <a href="signup.php" class="login-link">Sign up</a></p>
+                    </div>
                 </form>
             </div>
         </div>

@@ -1,54 +1,77 @@
 <?php
 // Start the session
-// session_start();
+session_start();
 
 // Check if user is logged in
-// if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-//     header("Location: ../auth/login.php");
-//     exit;
-// }
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header("Location: ../auth/login.php");
+    exit;
+}
 
 // Include database connection
 include "../config/connection.php";
 
 // Fetch dashboard stats
-// $stats = [
-//     'total' => 0,
-//     'approved' => 0,
-//     'pending' => 0,
-//     'rejected' => 0
-// ];
+$stats = [
+    'total' => 0,
+    'approved' => 0,
+    'pending' => 0,
+    'rejected' => 0
+];
 
 // Get total students count
-// $query = "SELECT COUNT(*) as total FROM students";
-// $result = mysqli_query($connection, $query);
-// if ($result) {
-//     $stats['total'] = mysqli_fetch_assoc($result)['total'];
-// }
+$query = "SELECT COUNT(*) as total FROM students";
+$result = $connection->query($query);
+if ($result) {
+    $stats['total'] = $result->fetch_assoc()['total'];
+}
 
 // Get counts by status
-// $statusQuery = "SELECT 
-//                 COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved,
-//                 COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
-//                 COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected
-//                 FROM engagements";
-// $statusResult = mysqli_query($connection, $statusQuery);
-// if ($statusResult) {
-//     $statusCounts = mysqli_fetch_assoc($statusResult);
-//     $stats['approved'] = $statusCounts['approved'];
-//     $stats['pending'] = $statusCounts['pending'];
-//     $stats['rejected'] = $statusCounts['rejected'];
-// }
+$statusQuery = "SELECT 
+                COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved,
+                COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
+                COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected
+                FROM engagements";
+$statusResult = $connection->query($statusQuery);
+if ($statusResult) {
+    $statusCounts = $statusResult->fetch_assoc();
+    $stats['approved'] = $statusCounts['approved'] ?? 0;
+    $stats['pending'] = $statusCounts['pending'] ?? 0;
+    $stats['rejected'] = $statusCounts['rejected'] ?? 0;
+}
 
 // Get recent students with their engagement details
-// $studentsQuery = "SELECT s.student_id, s.name, s.year_group, s.major as course, s.nationality, 
-//                 e.engagement_type, e.status, e.engagement_id
-//                 FROM students s
-//                 LEFT JOIN engagements e ON s.student_id = e.student_id
-//                 ORDER BY s.created_at DESC
-//                 LIMIT 10";
-// $studentsResult = mysqli_query($connection, $studentsQuery);
- ?> 
+$studentsQuery = "SELECT s.student_id, s.name, s.year_group, s.major as course, s.nationality, 
+                e.engagement_type, e.status, e.engagement_id
+                FROM students s
+                LEFT JOIN engagements e ON s.student_id = e.student_id
+                ORDER BY s.created_at DESC
+                LIMIT 10";
+$studentsResult = $connection->query($studentsQuery);
+
+// Get engagement type distribution for chart
+$engagementChartQuery = "SELECT engagement_type, COUNT(*) as count 
+                         FROM engagements 
+                         GROUP BY engagement_type";
+$engagementChartResult = $connection->query($engagementChartQuery);
+
+$chartData = [
+    'labels' => [],
+    'data' => [],
+    'colors' => [
+        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'
+    ]
+];
+
+if ($engagementChartResult) {
+    $i = 0;
+    while ($row = $engagementChartResult->fetch_assoc()) {
+        $chartData['labels'][] = $row['engagement_type'];
+        $chartData['data'][] = $row['count'];
+        $i++;
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -303,21 +326,14 @@ include "../config/connection.php";
         // Chart for engagement types
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('engagementChart').getContext('2d');
-            
-            // Sample data - To be replaced with actual data from our database
+
             const engagementChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Study abroad', 'Research presentation', 'Conference', 'Internship', 'Other'],
+                    labels: <?php echo json_encode($chartData['labels']); ?>,
                     datasets: [{
-                        data: [30, 20, 25, 15, 10],
-                        backgroundColor: [
-                            '#4e73df',
-                            '#1cc88a',
-                            '#36b9cc',
-                            '#f6c23e',
-                            '#e74a3b'
-                        ],
+                        data: <?php echo json_encode($chartData['data']); ?>,
+                        backgroundColor: <?php echo json_encode($chartData['colors']); ?>,
                         borderWidth: 1
                     }]
                 },

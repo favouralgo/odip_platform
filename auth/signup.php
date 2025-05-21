@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +16,26 @@
             <!-- Signup Form -->
             <div id="signup-form" class="form active">
                 <h2>Create an Account</h2>
+                
+                <?php if (isset($_SESSION['signup_error'])): ?>
+                <div class="alert alert-danger">
+                    <?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?>
+                </div>
+                <?php endif; ?>
+                
+                <?php if (isset($_SESSION['signup_errors'])): ?>
+                <div class="alert alert-danger">
+                    <ul>
+                    <?php 
+                        foreach ($_SESSION['signup_errors'] as $error) {
+                            echo "<li>$error</li>";
+                        }
+                        unset($_SESSION['signup_errors']); 
+                    ?>
+                    </ul>
+                </div>
+                <?php endif; ?>
+                
                 <form id="signup-form" name="sf" role="sign-up" action="../actions/signup_action.php" method="POST">
                     <div class="form-row">
                         <div class="form-group">
