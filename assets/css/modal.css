@@ -89,3 +89,41 @@
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
+
+/* Additional Modal Styles for Student Information */
+.empty-results {
+    text-align: center;
+    padding: 30px;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+/* Make sure the modal properly handles long content */
+.modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* Style for the personal information in the modal */
+.fellow-details p {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.fellow-details strong {
+    color: #8F3B3B;
+    display: inline-block;
+    width: 100px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-body {
+        grid-template-columns: 1fr;
+    }
+    
+    .fellow-details {
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+}
