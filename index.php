@@ -1,10 +1,65 @@
+<?php
+// Include database connection
+include "config/connection.php";
+
+// Get all students with their engagement details
+$query = "SELECT s.student_id, s.name, s.year_group, s.major, s.nationality, s.has_picture, s.email_address,
+          e.engagement_type, e.destination_country, e.institution_name
+          FROM students s
+          LEFT JOIN engagements e ON s.student_id = e.student_id
+          WHERE e.status = 'approved' OR e.status IS NULL
+          ORDER BY s.name ASC
+          LIMIT 8"; // Limit to 8 students for the gallery
+
+$result = $connection->query($query);
+$students = [];
+
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $students[] = $row;
+    }
+}
+
+// Get region options for dropdown
+$regionOptions = ['Africa', 'Europe', 'Asia', 'Americas'];
+
+// Get year options for dropdown
+$yearQuery = "SELECT DISTINCT year_group FROM students ORDER BY year_group DESC";
+$yearResult = $connection->query($yearQuery);
+$yearOptions = [];
+
+if ($yearResult) {
+    while ($row = $yearResult->fetch_assoc()) {
+        $yearOptions[] = $row['year_group'];
+    }
+}
+
+// Get university options for dropdown
+$universityQuery = "SELECT DISTINCT institution_name FROM engagements WHERE institution_name IS NOT NULL ORDER BY institution_name ASC";
+$universityResult = $connection->query($universityQuery);
+$universityOptions = [];
+
+if ($universityResult) {
+    while ($row = $universityResult->fetch_assoc()) {
+        if (!empty($row['institution_name'])) {
+            $universityOptions[] = $row['institution_name'];
+        }
+    }
+}
+
+// Convert students array to JSON for JavaScript use
+$studentsJson = json_encode($students);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-<head>    <meta charset="UTF-8">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ODIP Experience Platform</title>
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="assets/css/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header class="header">
@@ -27,8 +82,6 @@
     </section>
     <section class="content">
         <div class="container">
-            
-            
             <div class="description">
                 <p>
                     The Fellowship, presented by the United Nations Academic Impact and ADLI, is a semester-long leadership development program that takes place on campuses worldwide. Aimed at advancing your leadership skills, the Fellowship offers a unique opportunity to engage with a global network of peers dedicated to making a significant social impact.
@@ -67,29 +120,35 @@
     <!-- First Row of Search Options -->
     <div class="search-container">
         <div class="dropdown-container">
-            <select name="region">
+            <select name="region" id="regionSelect">
                 <option value="">Region</option>
-                <!-- Add options here -->
+                <?php foreach ($regionOptions as $region): ?>
+                    <option value="<?php echo $region; ?>"><?php echo $region; ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
         
         <div class="dropdown-container">
-            <select name="all">
-                <option value="">All</option>
-                <!-- Add options here -->
+            <select name="year" id="yearSelect">
+                <option value="">Year</option>
+                <?php foreach ($yearOptions as $year): ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
         
         <div class="dropdown-container">
-            <select name="university">
-                <option value="">University</option>
-                <!-- Add options here -->
+            <select name="university" id="universitySelect">
+                <option value="">University/Institution</option>
+                <?php foreach ($universityOptions as $university): ?>
+                    <option value="<?php echo htmlspecialchars($university); ?>"><?php echo htmlspecialchars($university); ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
         
         <div class="search-box">
-            <input type="text" placeholder="Search by Keyword">
-            <button class="search-button">
+            <input type="text" id="keywordInput" placeholder="Search by Keyword">
+            <button class="search-button" id="searchButton">
                 <span class="search-icon">⌕</span>
             </button>
         </div>
@@ -97,118 +156,62 @@
     
     <!-- Second Row of Search Options -->
     <div class="filters-container">
-        <div class="dropdown-container">
-            <select name="year">
-                <option value="">Year</option>
-                <!-- Add options here -->
-            </select>
-        </div>
-        
-        <div class="dropdown-container">
-            <select name="sdg">
-                <option value="">Sustainable Development Goal</option>
-                <!-- Add options here -->
-            </select>
-        </div>
-        
-        <div class="dropdown-container">
-            <select name="role">
-                <option value="">Millennium Fellowship Role</option>
-                <!-- Add options here -->
-            </select>
-        </div>
-        
-        <button class="clear-button">Clear filters</button>
+        <button class="clear-button" id="clearButton">Clear filters</button>
     </div>
-    <div class="gallery-container">
+    
+    <!-- Student Gallery Container -->
+    <div class="gallery-container" id="galleryContainer">
         <!-- Top row -->
         <div class="gallery-row">
-            <div class="fellow-card">
-                <div class="fellow-image-container" style="border-color: #8F3B3B;">
-                    <img src="/api/placeholder/200/200" alt="Kehinde Adebiyi" class="fellow-image">
+            <?php 
+            $count = 0;
+            foreach ($students as $student): 
+                if ($count == 4) echo '</div><div class="gallery-row">';
+            ?>
+                <div class="fellow-card" data-id="<?php echo $student['student_id']; ?>">
+                    <div class="fellow-image-container" style="border-color: #8F3B3B;">
+                        <?php if ($student['has_picture']): ?>
+                            <img src="uploads/student_<?php echo $student['student_id']; ?>.jpg" alt="<?php echo htmlspecialchars($student['name']); ?>" class="fellow-image">
+                        <?php else: ?>
+                            <img src="images/default_profile.png" alt="<?php echo htmlspecialchars($student['name']); ?>" class="fellow-image">
+                        <?php endif; ?>
+                    </div>
+                    <p class="fellow-name"><?php echo htmlspecialchars($student['name']); ?></p>
                 </div>
-                <p class="fellow-name">Kehinde Adebiyi</p>
-            </div>
-
-            <div class="fellow-card">
-                <div class="fellow-image-container" style="border-color: #8F3B3B;">
-                    <img src="/api/placeholder/200/200" alt="Idongesit Ubon" class="fellow-image">
-                </div>
-                <p class="fellow-name">Idongesit Ubon</p>
-            </div>
-
-            <div class="fellow-card">
-                <div class="fellow-image-container" style="border-color: #8F3B3B;">
-                    <img src="/api/placeholder/200/200" alt="Sarosh Nagar" class="fellow-image">
-                </div>
-                <p class="fellow-name">Sarosh Nagar</p>
-            </div>
-
-            <div class="fellow-card">
-                <div class="fellow-image-container" style="border-color: #8F3B3B;">
-                    <img src="/api/placeholder/200/200" alt="Millennium Fellowship Logo" class="fellow-image">
-                </div>
-                <p class="fellow-name">Khulood Ali Hassan</p>
-            </div>
+            <?php 
+                $count++;
+                endforeach; 
+            ?>
         </div>
-
-        <!-- Bottom row -->
-        <div class="gallery-row">
-            <div class="fellow-card">
-                <div class="fellow-image-container" style="border-color: #8F3B3B;">
-                    <img src="/api/placeholder/200/200" alt="Hannah Lily Baron" class="fellow-image">
-                </div>
-                <p class="fellow-name">Hannah Lily Baron</p>
-            </div>
-
-            <div class="fellow-card">
-                <div class="fellow-image-container" style="border-color: #8F3B3B;">
-                    <img src="/api/placeholder/200/200" alt="Santiago Carrillo Sánchez" class="fellow-image">
-                </div>
-                <p class="fellow-name">Santiago Carrillo Sánchez</p>
-            </div>
-
-            <div class="fellow-card">
-                <div class="fellow-image-container" style="border-color: #8F3B3B;">
-                    <img src="/api/placeholder/200/200" alt="Maria Teresa Carrozza" class="fellow-image">
-                </div>
-                <p class="fellow-name">Maria Teresa Carrozza</p>
-            </div>
-
-            <div class="fellow-card">
-                <div class="fellow-image-container" style="border-color: #8F3B3B;">
-                    <img src="/api/placeholder/200/200" alt="Maxwell Mwalukanga" class="fellow-image">
-                </div>
-                <p class="fellow-name">Maxwell Mwalukanga</p>
-            </div>        </div>
     </div>
 
-    <!-- Modal for Fellow Information -->
+    <!-- Modal for Student Information -->
     <div id="fellowModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <div class="modal-header">
                 <div class="modal-image-container">
-                    <img id="modalFellowImage" src="" alt="Fellow Image">
+                    <img id="modalFellowImage" src="" alt="Student Image">
                 </div>
                 <h2 id="modalFellowName"></h2>
             </div>
             <div class="modal-body">
                 <div class="fellow-details">
-                    <p><strong>University:</strong> <span id="modalUniversity">Ashesi University</span></p>
-                    <p><strong>Year:</strong> <span id="modalYear">2023</span></p>
-                    <p><strong>SDG Focus:</strong> <span id="modalSDG">Quality Education</span></p>
-                    <p><strong>Region:</strong> <span id="modalRegion">West Africa</span></p>
-                    <p><strong>Role:</strong> <span id="modalRole">Fellow</span></p>
+                    <p><strong>Year Group:</strong> <span id="modalYear"></span></p>
+                    <p><strong>Major:</strong> <span id="modalMajor"></span></p>
+                    <p><strong>Nationality:</strong> <span id="modalNationality"></span></p>
+                    <p><strong>Engagement:</strong> <span id="modalEngagement"></span></p>
+                    <p><strong>Destination:</strong> <span id="modalDestination"></span></p>
+                    <p><strong>Institution:</strong> <span id="modalInstitution"></span></p>
                 </div>
                 <div>
                     <div class="fellow-bio">
-                        <h3>About</h3>
-                        <p id="modalBio">This student is passionate about making a positive impact through their leadership and dedication to sustainable development goals.</p>
+                        <h3>About Their Experience</h3>
+                        <p id="modalInspiration"></p>
                     </div>
                     <div class="fellow-project">
-                        <h3>Project</h3>
-                        <p id="modalProject">Working on innovative solutions to address challenges related to their focused sustainable development goal.</p>
+                        <h3>Personal Growth</h3>
+                        <p id="modalPersonalChange"></p>
                     </div>
                 </div>
             </div>
@@ -262,154 +265,183 @@
                     <span class="arrow-icon">→</span>
                 </a>
             </div>
-        </div>        <div class="copyright">
+        </div>
+        <div class="copyright">
             <p>Copyright © Ashesi University</p>
         </div>
     </footer>
 
     <script>
-        // Sample fellows data - in a real application, you would fetch this from a database
-        const fellowsData = {
-            "Kehinde Adebiyi": {
-                image: "/api/placeholder/200/200",
-                university: "Ashesi University",
-                year: "2023",
-                sdg: "Quality Education",
-                region: "West Africa",
-                role: "Campus Director",
-                bio: "Kehinde is passionate about educational equity and access to quality education in underserved communities.",
-                project: "Developing a mentorship program for high school students in rural Ghana."
-            },
-            "Idongesit Ubon": {
-                image: "/api/placeholder/200/200",
-                university: "Ashesi University",
-                year: "2023",
-                sdg: "Gender Equality",
-                region: "West Africa",
-                role: "Fellow",
-                bio: "Idongesit is working on initiatives to promote gender equality in STEM fields.",
-                project: "Creating workshops to encourage young girls to pursue careers in technology."
-            },
-            "Sarosh Nagar": {
-                image: "/api/placeholder/200/200",
-                university: "Ashesi University",
-                year: "2023",
-                sdg: "Climate Action",
-                region: "South Asia",
-                role: "Fellow",
-                bio: "Sarosh is dedicated to addressing climate change through community engagement.",
-                project: "Organizing tree-planting campaigns and educational workshops on sustainability."
-            },
-            "Khulood Ali Hassan": {
-                image: "/api/placeholder/200/200",
-                university: "Ashesi University",
-                year: "2023",
-                sdg: "Clean Water and Sanitation",
-                region: "Middle East",
-                role: "Fellow",
-                bio: "Khulood focuses on water conservation and access to clean water in resource-limited areas.",
-                project: "Designing affordable water filtration systems for rural communities."
-            },
-            "Hannah Lily Baron": {
-                image: "/api/placeholder/200/200",
-                university: "Ashesi University",
-                year: "2023",
-                sdg: "Zero Hunger",
-                region: "North America",
-                role: "Fellow",
-                bio: "Hannah is committed to addressing food insecurity in urban areas.",
-                project: "Creating community gardens and food distribution networks in underserved neighborhoods."
-            },
-            "Santiago Carrillo Sánchez": {
-                image: "/api/placeholder/200/200",
-                university: "Ashesi University",
-                year: "2023",
-                sdg: "Sustainable Cities",
-                region: "South America",
-                role: "Campus Director",
-                bio: "Santiago is passionate about urban planning and sustainable development.",
-                project: "Developing models for eco-friendly transportation systems in growing cities."
-            },
-            "Maria Teresa Carrozza": {
-                image: "/api/placeholder/200/200",
-                university: "Ashesi University",
-                year: "2023",
-                sdg: "Good Health and Well-being",
-                region: "Europe",
-                role: "Fellow",
-                bio: "Maria is dedicated to improving mental health awareness and support systems.",
-                project: "Creating peer counseling programs for college students."
-            },
-            "Maxwell Mwalukanga": {
-                image: "/api/placeholder/200/200",
-                university: "Ashesi University",
-                year: "2023",
-                sdg: "Affordable and Clean Energy",
-                region: "East Africa",
-                role: "Fellow",
-                bio: "Maxwell is working on renewable energy solutions for off-grid communities.",
-                project: "Designing and implementing solar power systems for rural schools and clinics."
-            }
-        };
-
-        // Get modal elements
-        const modal = document.getElementById("fellowModal");
-        const modalClose = document.querySelector(".close-modal");
-        const fellowCards = document.querySelectorAll(".fellow-card");
+        // Initial student data
+        const initialStudents = <?php echo $studentsJson; ?>;
         
-        // Modal data elements
-        const modalFellowName = document.getElementById("modalFellowName");
-        const modalFellowImage = document.getElementById("modalFellowImage");
-        const modalUniversity = document.getElementById("modalUniversity");
-        const modalYear = document.getElementById("modalYear");
-        const modalSDG = document.getElementById("modalSDG");
-        const modalRegion = document.getElementById("modalRegion");
-        const modalRole = document.getElementById("modalRole");
-        const modalBio = document.getElementById("modalBio");
-        const modalProject = document.getElementById("modalProject");
+        // DOM elements
+        const galleryContainer = document.getElementById('galleryContainer');
+        const modal = document.getElementById('fellowModal');
+        const modalClose = document.querySelector('.close-modal');
         
-        // Add click event to each fellow card
-        fellowCards.forEach(card => {
-            card.addEventListener("click", function() {
-                const name = this.querySelector(".fellow-name").textContent;
-                const fellow = fellowsData[name];
-                  if (fellow) {
-                    // Populate modal with fellow data
-                    modalFellowName.textContent = name;
+        // Modal elements
+        const modalFellowName = document.getElementById('modalFellowName');
+        const modalFellowImage = document.getElementById('modalFellowImage');
+        const modalYear = document.getElementById('modalYear');
+        const modalMajor = document.getElementById('modalMajor');
+        const modalNationality = document.getElementById('modalNationality');
+        const modalEngagement = document.getElementById('modalEngagement');
+        const modalDestination = document.getElementById('modalDestination');
+        const modalInstitution = document.getElementById('modalInstitution');
+        const modalInspiration = document.getElementById('modalInspiration');
+        const modalPersonalChange = document.getElementById('modalPersonalChange');
+        
+        // Search elements
+        const keywordInput = document.getElementById('keywordInput');
+        const regionSelect = document.getElementById('regionSelect');
+        const yearSelect = document.getElementById('yearSelect');
+        const universitySelect = document.getElementById('universitySelect');
+        const searchButton = document.getElementById('searchButton');
+        const clearButton = document.getElementById('clearButton');
+        
+        // Function to show student details in modal
+        function showStudentModal(studentId) {
+            // Fetch full student details
+            fetch(`ajax/get_student_details.php?id=${studentId}`)
+                .then(response => response.json())
+                .then(student => {
+                    if (student.error) {
+                        console.error('Error:', student.error);
+                        return;
+                    }
                     
-                    // Use a default placeholder if image is not available or invalid
-                    if (fellow.image && fellow.image !== "/api/placeholder/200/200") {
-                        modalFellowImage.src = fellow.image;
+                    // Populate modal with student data
+                    modalFellowName.textContent = student.name;
+                    
+                    // Set student image
+                    if (student.has_picture == 1) {
+                        modalFellowImage.src = `uploads/student_${student.student_id}.jpg`;
                     } else {
-                        // Using a default placeholder image
                         modalFellowImage.src = "images/default_profile.png";
                     }
                     
-                    modalFellowImage.alt = name;
-                    modalUniversity.textContent = fellow.university;
-                    modalYear.textContent = fellow.year;
-                    modalSDG.textContent = fellow.sdg;
-                    modalRegion.textContent = fellow.region;
-                    modalRole.textContent = fellow.role;
-                    modalBio.textContent = fellow.bio;
-                    modalProject.textContent = fellow.project;
+                    modalFellowImage.alt = student.name;
+                    modalYear.textContent = student.year_group || "Not specified";
+                    modalMajor.textContent = student.major || "Not specified";
+                    modalNationality.textContent = student.nationality || "Not specified";
+                    modalEngagement.textContent = student.engagement_type || "Not specified";
+                    modalDestination.textContent = student.destination_country || "Not specified";
+                    modalInstitution.textContent = student.institution_name || "Not specified";
+                    
+                    // Set experience details
+                    modalInspiration.textContent = student.inspiration || "No information provided.";
+                    modalPersonalChange.textContent = student.personal_change || "No information provided.";
                     
                     // Display modal
                     modal.style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+        }
+        
+        // Function to update the gallery with search results
+        function updateGallery(students) {
+            if (students.length === 0) {
+                galleryContainer.innerHTML = '<div class="empty-results">No students found matching your criteria.</div>';
+                return;
+            }
+            
+            let html = '<div class="gallery-row">';
+            students.forEach((student, index) => {
+                if (index > 0 && index % 4 === 0) {
+                    html += '</div><div class="gallery-row">';
+                }
+                
+                const imgSrc = student.has_picture == 1 
+                    ? `uploads/student_${student.student_id}.jpg` 
+                    : 'images/default_profile.png';
+                
+                html += `
+                    <div class="fellow-card" data-id="${student.student_id}">
+                        <div class="fellow-image-container" style="border-color: #8F3B3B;">
+                            <img src="${imgSrc}" alt="${student.name}" class="fellow-image">
+                        </div>
+                        <p class="fellow-name">${student.name}</p>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            galleryContainer.innerHTML = html;
+            
+            // Attach click events to all cards
+            attachCardClickEvents();
+        }
+        
+        // Function to attach click events to all cards
+        function attachCardClickEvents() {
+            const fellowCards = document.querySelectorAll('.fellow-card');
+            fellowCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const studentId = this.getAttribute('data-id');
+                    showStudentModal(studentId);
+                });
+            });
+        }
+        
+        // Function to perform search
+        function performSearch() {
+            const keyword = keywordInput.value;
+            const region = regionSelect.value;
+            const year = yearSelect.value;
+            const university = universitySelect.value;
+            
+            // Build the search URL
+            const searchUrl = `ajax/search_students.php?keyword=${encodeURIComponent(keyword)}&region=${encodeURIComponent(region)}&year=${encodeURIComponent(year)}&university=${encodeURIComponent(university)}`;
+            
+            fetch(searchUrl)
+                .then(response => response.json())
+                .then(students => updateGallery(students))
+                .catch(error => console.error('Error searching students:', error));
+        }
+        
+        // Attach event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with click events
+            attachCardClickEvents();
+            
+            // Close modal when clicking X
+            modalClose.addEventListener('click', function() {
+                modal.style.display = "none";
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
                 }
             });
-        });
-        
-        // Close modal when clicking the X button
-        modalClose.addEventListener("click", function() {
-            modal.style.display = "none";
-        });
-        
-        // Close modal when clicking outside the modal content
-        window.addEventListener("click", function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
+            
+            // Search button click
+            searchButton.addEventListener('click', performSearch);
+            
+            // Enter key in search input
+            keywordInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // Select dropdown changes
+            regionSelect.addEventListener('change', performSearch);
+            yearSelect.addEventListener('change', performSearch);
+            universitySelect.addEventListener('change', performSearch);
+            
+            // Clear filters button
+            clearButton.addEventListener('click', function() {
+                keywordInput.value = '';
+                regionSelect.selectedIndex = 0;
+                yearSelect.selectedIndex = 0;
+                universitySelect.selectedIndex = 0;
+                updateGallery(initialStudents);
+            });
         });
     </script>
 </body>
