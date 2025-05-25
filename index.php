@@ -96,17 +96,17 @@ $studentsJson = json_encode($students);
     </section>
     <div class="stats-container">
         <div class="stat-item">
-            <div class="stat-number">100+</div>
+            <div class="stat-number">50+</div>
             <div class="stat-label">Ashesi<br>Students</div>
         </div>
         
         <div class="stat-item">
-            <div class="stat-number">330+</div>
+            <div class="stat-number">8+</div>
             <div class="stat-label">Campuses</div>
         </div>
         
         <div class="stat-item">
-            <div class="stat-number">48</div>
+            <div class="stat-number">18</div>
             <div class="stat-label">Countries</div>
         </div>
     </div>
