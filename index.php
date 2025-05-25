@@ -84,16 +84,13 @@ $studentsJson = json_encode($students);
         <div class="container">
             <div class="description">
                 <p>
-                    The Fellowship, presented by the United Nations Academic Impact and ADLI, is a semester-long leadership development program that takes place on campuses worldwide. Aimed at advancing your leadership skills, the Fellowship offers a unique opportunity to engage with a global network of peers dedicated to making a significant social impact.
+                    The ODIP Student Profile Platform, developed by Ashesi students for Ashesi students, is a transformative digital space designed to bridge the gap between ambition and opportunity. Born from a need to address <strong>information asymmetry</strong> in study abroad programs, this platform connects you with firsthand experiences from peers and alumni who have walked the path you’re considering.
                 </p>
                 
                 <p>
-                    Fellows have the chance to engage in a series of sessions focused on developing actionable plans for their social impact projects, sharing best practices, and contributing to the Sustainable Development Goals (SDGs) in meaningful ways. Through collaborative learning and practical action, Fellows are prepared to lead initiatives that drive positive change within their communities and beyond.
+                    Through authentic stories, practical advice, and mentorship, the platform demystifies the study abroad journey—helping you make informed decisions about programs, credit transfers, and cultural adaptation. Whether you’re a first-year student curious about exchanges or a senior weighing postgraduate options, the ODIP Student Profile Platform is your gateway to <strong> global readiness. </strong>
                 </p>
-                
-                <p>
-                    The program has grown to become a powerful global movement, with over 15,000 Fellows having graduated since its inception. These alumni represent more than 300 campuses across 48 nations, demonstrating the extensive reach and collective strength of the Fellowship. This community of fellows is a testament to the program's success in nurturing leaders who are committed to advancing global goals and creating a more sustainable and equitable world.
-                </p>
+               
             </div>
         </div>
     </section>
