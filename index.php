@@ -66,8 +66,7 @@ $studentsJson = json_encode($students);
         <img src="images/Ashesi image2.webp" alt="ashesi university" class="logo" />
         <nav class="nav">
             <a href="index.php">Home</a>
-            <a href="#">About</a>
-            <a href="students/student.php">Meet the students</a>
+            <a href="#meet-students-section">Meet the students</a>
             <a href="#">Impact</a>
             <a href="auth/login.php">Login</a>
         </nav>
@@ -76,7 +75,7 @@ $studentsJson = json_encode($students);
     
     <section class="hero">
         <img src="images/Ashesi image3.jpg" alt="international engagement fellows" class="hero-img"   />
-        <div class="overlay">
+        <div class="overlay" id="meet-students-section">
             <h1 class="hero-title">Meet the students</h1>
         </div>
     </section>
